@@ -30,7 +30,7 @@ func (a AttributeType) Resolve_type_form_str(name string) int {
 	} else {
 		return a.aType["UNKNOWN_TYPE"]
 	}
-	
+}
 
 func (a AttributeType) Resolve_type_from_enum(enum int) string {
 	if enum == a.aType["ASPECT"] {
@@ -41,6 +41,7 @@ func (a AttributeType) Resolve_type_from_enum(enum int) string {
 		return "UNKNOWN"
 	}
 }
+
 func NewAttributeType() *AttributeType {
 	a := AttributeType{}
 	a.aType["ASPECT"] = 1
