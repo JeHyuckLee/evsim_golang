@@ -1,49 +1,46 @@
 package system
 
 import (
-	system_object "evsim_golang/system"
+	system_object "evsim_golaing/system"
 )
 
 type SysMessage struct {
-    sysobject *system_object.SysObject
+	sysobject *system_object.SysObject
 
-    __src string
-    __dst string
-    _msg_time int
-    _msg_list []string
-
+	_src      string
+	_dst      string
+	_msg_time float64
+	_msg_list []string
 }
 
+func (b *SysMessage) String() string {
+	return
+}
 
-class SysMessage(SysObject):
-    def __init__(self, src_name="", dst_name=""):
-        super(SysMessage, self).__init__()
-        self._src = src_name
-        self._dst = dst_name
-        self._msg_time = -1
-        self._msg_list = []
+func (b *SysMessage) insert(msg string) {
+	b._msg_list = append(b._msg_list, msg)
+}
 
-    def __str__(self):
-        return super(SysMessage, self).__str__() + \
-                f"\tSRC:{self._src}\t DST:{self._dst}"
+func (b *SysMessage) extend(_list []string) {
+	b._msg_list = append(b._msg_list, _list)
+}
 
-    def insert(self, msg):
-        self._msg_list.append(msg)
+func (b *SysMessage) retrieve() []string {
+	return b._msg_list
+}
 
-    def extend(self, _list):
-        self._msg_list.extend(_list)
+func (b *SysMessage) get_src() string {
+	return b._src
+}
 
-    def retrieve(self):
-        return self._msg_list
+func (b *SysMessage) get_dst() string {
+	return b._dst
+}
 
-    def get_src(self):
-        return self._src
+func (b *SysMessage) set_msg_time(t float64) {
+	b._msg_time = t
+}
 
-    def get_dst(self):
-        return self._dst
-
-    def set_msg_time(self, t):
-        self._msg_time = t
-
-    def get_msg_time(self):
-        return self._msg_time
+func (b *SysMessage) get_msg_time() float64 {
+	return b._msg_time
+}
