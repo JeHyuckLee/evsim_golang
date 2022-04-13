@@ -4,6 +4,17 @@ import (
 	system_object "evsim_golang/system"
 )
 
+type SysMessage struct {
+    sysobject *system_object.SysObject
+
+    __src string
+    __dst string
+    _msg_time int
+    _msg_list []string
+
+}
+
+
 class SysMessage(SysObject):
     def __init__(self, src_name="", dst_name=""):
         super(SysMessage, self).__init__()
