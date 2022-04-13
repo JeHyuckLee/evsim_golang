@@ -1,12 +1,6 @@
 package system
 
-import (
-	system_object "evsim_golaing/system"
-)
-
 type SysMessage struct {
-	sysobject *system_object.SysObject
-
 	_src      string
 	_dst      string
 	_msg_time float64
@@ -22,7 +16,7 @@ func (b *SysMessage) insert(msg string) {
 }
 
 func (b *SysMessage) extend(_list []string) {
-	b._msg_list = append(b._msg_list, _list)
+	b._msg_list = extend(b._msg_list, _list)
 }
 
 func (b *SysMessage) retrieve() []string {
