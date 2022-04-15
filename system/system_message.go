@@ -7,16 +7,12 @@ type SysMessage struct {
 	_msg_list []string
 }
 
-func (b *SysMessage) String() string {
-	return
-}
-
 func (b *SysMessage) insert(msg string) {
 	b._msg_list = append(b._msg_list, msg)
 }
 
 func (b *SysMessage) extend(_list []string) {
-	b._msg_list = extend(b._msg_list, _list)
+	b._msg_list = append(b._msg_list, _list...)
 }
 
 func (b *SysMessage) retrieve() []string {
