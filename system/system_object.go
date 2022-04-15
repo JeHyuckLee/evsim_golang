@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 package system_object
+=======
+package system
+>>>>>>> 138dbac8a7345d6ca6951e68c1873c1665d0ebb0
 
 import (
 	"fmt"
@@ -26,11 +30,19 @@ func (sy SysObject) String() string {
 	return fmt.Sprintf("ID:%10d %s", sy.__object_id, sy.__created_time)
 }
 
+<<<<<<< HEAD
 func Set_req_time(sy *SysObject) {
 	return
 }
 
 func Get_req_time(sy *SysObject) {
+=======
+func set_req_time(sy *SysObject) {
+	return
+}
+
+func get_req_time(sy *SysObject) {
+>>>>>>> 138dbac8a7345d6ca6951e68c1873c1665d0ebb0
 	return
 }
 
