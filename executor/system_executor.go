@@ -4,7 +4,6 @@ import (
 	"errors"
 	"evsim_golang/definition"
 	"evsim_golang/model"
-	"evsim_golang/my"
 	"evsim_golang/system"
 	"fmt"
 	"math"
@@ -59,6 +58,7 @@ func NewSysExecutor(_time_step interface{}, _sim_name, _sim_mode string) *SysExe
 	se.min_schedule_item = *deque.New()
 	se.output_event_queue = *deque.New()
 	se.sim_init_time = time.Now()
+	return &se
 }
 
 func (se SysExecutor) Get_global_time() float64 {
@@ -206,39 +206,53 @@ func (se *SysExecutor) Flattening(_model, _del_model, _del_coupling interface{})
 func (se *SysExecutor) Init_sim() {
 	se.simulation_mode = definition.SIMULATION_RUNNING
 
-	var _del_model []*BehaviorModelExecutor
-	var _del_coupling []*BehaviorModelExecutor
+	var _del_model map[float64]*BehaviorModelExecutor
+	var _del_coupling map[Object]Object
 
 	for _, model_list := range se.waiting_obj_map {
 		for _, model := range model_list {
-			if model.Get_type() == definition.BEHAVIORAL {
+			if model.Behaviormodel.CoreModel.Get_type() == definition.BEHAVIORAL {
 				se.Flattening(model, _del_model, _del_coupling)
 			}
 		}
 	}
 
-	// for target, _model := range _del_model {
-	// 	if _model := se.waiting_obj_map[target] {
-	// 		se.waiting_obj_map[target].remove(_model)
-	// 	}
-	// }
+	for target, _model := range _del_model {
+		for _, model := range se.waiting_obj_map[target] {
+			if _model == model {
+				// se.waiting_obj_map[float64(target)].remove(_model)
+			}
+		}
 
-	// for target, _model := range _del_coupling {
-	// 	if _model := se.port_map[target] {
-	// 		se.port_map[target].remove(_model)
-	// 	}
-	// }
+	}
 
-	// if !(se.active_obj_map == nil) { se.global_time = my.Min(se.waiting_obj_map) }
+	for target, _model := range _del_coupling {
+		for _, model := range se.port_map[target] {
+			if model == _model {
+				// se.port_map[target].remove(_model)
+			}
+		}
+	}
 
-	// if !(se.min_schedule_item) {
-	// 	for obj := se.active_obj_map.Items(){
-	// 		if obj[1].Time_advance() < 0 {
-	// 			print("You should give posistive real number for the deadline")
-	// 		}
-	// 		obj[1].Set_req_time(se.global_time)
-	// 		se.min_schedule_item = append(se.min_schedule_item, obj[1])
-	// 	}
+	if !(se.active_obj_map == nil) {
+		var min float64 = 0
+		for k, _ := range se.waiting_obj_map {
+			if k < min {
+				min = k
+			}
+		}
+		se.global_time = min
+	}
+
+	if !(se.min_schedule_item.Cap() == 0) {
+		for _, obj := range se.active_obj_map {
+			if obj.Time_advance() < 0 {
+				print("You should give posistive real number for the deadline")
+			}
+			obj.Set_req_time(se.global_time, 0)
+			se.min_schedule_item.PushBack(obj)
+		}
+	}
 }
 
 func (se *SysExecutor) Schedule() {
@@ -321,7 +335,7 @@ func (se *SysExecutor) Simulation_stop() {
 func (se *SysExecutor) Insert_external_event(_port, _msg string, scheduled_time int) {
 	sm := system.NewSysMessage("SRC", _port)
 	sm.Insert(_msg)
-	_, bool := my.Slice_Find_string(se.behaviormodel.CoreModel.Intput_ports, _port)
+	_, bool := Slice_Find_string(se.behaviormodel.CoreModel.Intput_ports, _port)
 	if bool == true {
 		// self.lock.acquire()
 		// heapq.heappush(self.input_event_queue,
@@ -336,7 +350,7 @@ func (se *SysExecutor) Insert_external_event(_port, _msg string, scheduled_time 
 func (se *SysExecutor) Insert_custom_external_event(_port string, _bodylist []string, scheduled_time interface{}) {
 	sm := system.NewSysMessage("SRC", _port)
 	sm.Extend(_bodylist)
-	_, bool := my.Slice_Find_string(se.behaviormodel.CoreModel.Intput_ports, _port)
+	_, bool := Slice_Find_string(se.behaviormodel.CoreModel.Intput_ports, _port)
 	if bool == true {
 		// self.lock.acquire()
 		// heapq.heappush(self.input_event_queue,
