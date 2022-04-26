@@ -211,8 +211,8 @@ func (se *SysExecutor) Init_sim() {
 
 	for _, model_list := range se.waiting_obj_map {
 		for _, model := range model_list {
-			if model.Behaviormodel.CoreModel.Get_type() == definition.BEHAVIORAL {
-				se.Flattening(model, _del_model, _del_coupling)
+			if model.Behaviormodel.CoreModel.Get_type() == definition.STRUCTURAL {
+				se.Flattening(model, _del_model, _del_coupling) //질문
 			}
 		}
 	}
@@ -220,16 +220,15 @@ func (se *SysExecutor) Init_sim() {
 	for target, _model := range _del_model {
 		for _, model := range se.waiting_obj_map[target] {
 			if _model == model {
-				// se.waiting_obj_map[float64(target)].remove(_model)
+				delete(se.waiting_obj_map, target)
 			}
 		}
-
 	}
 
 	for target, _model := range _del_coupling {
 		for _, model := range se.port_map[target] {
-			if model == _model {
-				// se.port_map[target].remove(_model)
+			if _model == model {
+				delete(se.port_map, target)
 			}
 		}
 	}
