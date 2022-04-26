@@ -89,7 +89,7 @@ func (se *SysExecutor) Create_entity() {
 			//슬라이스를 순회하여 obj 를 active_obj_map 에 넣는다.
 		}
 		delete(se.waiting_obj_map, key)
-		Custom_Sorted(se.min_schedule_item)
+		Custom_Sorted(&se.min_schedule_item)
 
 	}
 }
@@ -204,7 +204,41 @@ func (se *SysExecutor) Flattening(_model, _del_model, _del_coupling interface{})
 }
 
 func (se *SysExecutor) Init_sim() {
+	se.simulation_mode = definition.SIMULATION_RUNNING
 
+	var _del_model []*BehaviorModelExecutor
+	var _del_coupling []*BehaviorModelExecutor
+
+	for _, model_list := range se.waiting_obj_map {
+		for _, model := range model_list {
+			if model.Get_type() == definition.BEHAVIORAL {
+				se.Flattening(model, _del_model, _del_coupling)
+			}
+		}
+	}
+
+	// for target, _model := range _del_model {
+	// 	if _model := se.waiting_obj_map[target] {
+	// 		se.waiting_obj_map[target].remove(_model)
+	// 	}
+	// }
+
+	// for target, _model := range _del_coupling {
+	// 	if _model := se.port_map[target] {
+	// 		se.port_map[target].remove(_model)
+	// 	}
+	// }
+
+	// if !(se.active_obj_map == nil) { se.global_time = my.Min(se.waiting_obj_map) }
+
+	// if !(se.min_schedule_item) {
+	// 	for obj := se.active_obj_map.Items(){
+	// 		if obj[1].Time_advance() < 0 {
+	// 			print("You should give posistive real number for the deadline")
+	// 		}
+	// 		obj[1].Set_req_time(se.global_time)
+	// 		se.min_schedule_item = append(se.min_schedule_item, obj[1])
+	// 	}
 }
 
 func (se *SysExecutor) Schedule() {
