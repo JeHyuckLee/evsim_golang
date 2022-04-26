@@ -1,5 +1,11 @@
 package my
 
+import (
+	"evsim_golang/executor"
+
+	"github.com/gammazero/deque"
+)
+
 type Pair struct {
 	A, B interface{}
 }
@@ -34,16 +40,16 @@ func Map_Find(m map[interface{}]interface{}, val interface{}) (interface{}, bool
 	return -1, false
 }
 
-func Min(numbers map[interface{}]interface{}) interface{} {
-	var minNumber interface{}
-	for n := range numbers {
-		minNumber = n
-		break
+func Custom_Sorted(list deque.Deque) {
+	var A []*executor.BehaviorModelExecutor
+	for i := 1; i <= list.Len(); i++ {
+		A = append(A, list.PopFront().(*executor.BehaviorModelExecutor))
 	}
-	for n := range numbers {
-		if n < minNumber {
-			minNumber = n
+	for i := 1; i <= list.Len(); i++ {
+		for i := list.Len(); i > 0; i-- {
+			if A[i].Get_req_time() > A[i-1].Get_req_time() {
+				A[i-1], A[i] = A[i], A[i-1]
+			}
 		}
 	}
-	return minNumber
 }
