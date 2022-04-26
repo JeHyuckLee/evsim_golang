@@ -175,7 +175,7 @@ func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *s
 	if dst == nil { //도착지가없다
 		err := func() error {
 			return errors.New("Destination Not Found")
-		}
+		}()
 		fmt.Println(err)
 	}
 	for _, v := range dst {
@@ -246,7 +246,10 @@ func (se *SysExecutor) Init_sim() {
 	if !(se.min_schedule_item.Cap() == 0) {
 		for _, obj := range se.active_obj_map {
 			if obj.Time_advance() < 0 {
-				print("You should give posistive real number for the deadline")
+				err := func() error {
+					return errors.New("You should give posistive real number for the deadline")
+				}()
+				fmt.Println(err)
 			}
 			obj.Set_req_time(se.global_time, 0)
 			se.min_schedule_item.PushBack(obj)
