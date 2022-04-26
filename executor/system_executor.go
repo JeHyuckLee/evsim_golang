@@ -4,7 +4,6 @@ import (
 	"errors"
 	"evsim_golang/definition"
 	"evsim_golang/model"
-	"evsim_golang/my"
 	"evsim_golang/system"
 	"fmt"
 	"math"
@@ -90,7 +89,7 @@ func (se *SysExecutor) Create_entity() {
 		}
 		delete(se.waiting_obj_map, key)
 		// se.min_schedule_itme 정렬
-		my.Custom_Sorted(se.min_schedule_item)
+		Custom_Sorted(&se.min_schedule_item)
 	}
 }
 
@@ -252,28 +251,31 @@ func (se *SysExecutor) Init_sim() {
 		}
 	}
 
-	// for target, _model := range _del_model {
-	// 	if _model := se.waiting_obj_map[target] {
-	// 		se.waiting_obj_map[target].remove(_model)
-	// 	}
-	// }
+	for target, _model := range _del_model {
+		if _model == se.waiting_obj_map[target] {
+			se.waiting_obj_map[target].remove(_model)
+		}
+	}
 
-	// for target, _model := range _del_coupling {
-	// 	if _model := se.port_map[target] {
-	// 		se.port_map[target].remove(_model)
-	// 	}
-	// }
+	for target, _model := range _del_coupling {
+		if _model == se.port_map[target] {
+			se.port_map[target].remove(_model)
+		}
+	}
 
-	// if !(se.active_obj_map == nil) { se.global_time = my.Min(se.waiting_obj_map) }
+	if !(se.active_obj_map == nil) {
+		se.global_time = my.Min(se.waiting_obj_map)
+	}
 
 	// if !(se.min_schedule_item) {
-	// 	for obj := se.active_obj_map.Items(){
+	// 	for _,obj := se.active_obj_map.Items(){
 	// 		if obj[1].Time_advance() < 0 {
 	// 			print("You should give posistive real number for the deadline")
 	// 		}
 	// 		obj[1].Set_req_time(se.global_time)
 	// 		se.min_schedule_item = append(se.min_schedule_item, obj[1])
 	// 	}
+
 }
 
 func (se *SysExecutor) Schedule() {

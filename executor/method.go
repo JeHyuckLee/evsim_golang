@@ -1,7 +1,6 @@
-package my
+package executor
 
 import (
-	"evsim_golang/executor"
 	"math/rand"
 
 	"github.com/gammazero/deque"
@@ -42,10 +41,10 @@ func Map_Find(m map[interface{}]interface{}, val interface{}) (interface{}, bool
 }
 
 func Custom_Sorted(list *deque.Deque) {
-	var A []*executor.BehaviorModelExecutor
+	var A []*BehaviorModelExecutor
 	length := list.Len()
 	for i := 1; i <= length; i++ {
-		A = append(A, list.PopFront().(*executor.BehaviorModelExecutor))
+		A = append(A, list.PopFront().(*BehaviorModelExecutor))
 	}
 
 	quickSort(A)
@@ -55,7 +54,7 @@ func Custom_Sorted(list *deque.Deque) {
 	}
 }
 
-func quickSort(arr []*executor.BehaviorModelExecutor) []*executor.BehaviorModelExecutor {
+func quickSort(arr []*BehaviorModelExecutor) []*BehaviorModelExecutor {
 
 	if len(arr) <= 1 {
 		return arr
@@ -63,9 +62,9 @@ func quickSort(arr []*executor.BehaviorModelExecutor) []*executor.BehaviorModelE
 
 	median := arr[rand.Intn(len(arr))].Get_req_time()
 
-	lowPart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
-	highPart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
-	middlePart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
+	lowPart := make([]*BehaviorModelExecutor, 0, len(arr))
+	highPart := make([]*BehaviorModelExecutor, 0, len(arr))
+	middlePart := make([]*BehaviorModelExecutor, 0, len(arr))
 
 	for _, item := range arr {
 		switch {
