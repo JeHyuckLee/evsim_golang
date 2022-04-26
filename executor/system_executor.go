@@ -208,7 +208,7 @@ func (se *SysExecutor) Flattening(_model []string, _del_model []string, _del_cou
 		}
 	}
 	for k, v := range _model.retrieve_external_input_coupling { // 핸들 외부 입력 커플링
-		var port_key_lst []
+		var port_key_lst []int
 		for sk, sv := range se.port_map {
 			if k, _ := sv; _ {
 				port_key_lst = append(port_key_lst, sk)

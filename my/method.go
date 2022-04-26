@@ -2,6 +2,7 @@ package my
 
 import (
 	"evsim_golang/executor"
+	"math/rand"
 
 	"github.com/gammazero/deque"
 )
@@ -40,16 +41,48 @@ func Map_Find(m map[interface{}]interface{}, val interface{}) (interface{}, bool
 	return -1, false
 }
 
-func Custom_Sorted(list deque.Deque) {
+func Custom_Sorted(list *deque.Deque) {
 	var A []*executor.BehaviorModelExecutor
-	for i := 1; i <= list.Len(); i++ {
+	length := list.Len()
+	for i := 1; i <= length; i++ {
 		A = append(A, list.PopFront().(*executor.BehaviorModelExecutor))
 	}
-	for i := 1; i <= list.Len(); i++ {
-		for i := list.Len(); i > 0; i-- {
-			if A[i].Get_req_time() > A[i-1].Get_req_time() {
-				A[i-1], A[i] = A[i], A[i-1]
-			}
+
+	quickSort(A)
+
+	for i := 0; i < length-1; i++ {
+		list.PushBack(A[i])
+	}
+}
+
+func quickSort(arr []*executor.BehaviorModelExecutor) []*executor.BehaviorModelExecutor {
+
+	if len(arr) <= 1 {
+		return arr
+	}
+
+	median := arr[rand.Intn(len(arr))].Get_req_time()
+
+	lowPart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
+	highPart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
+	middlePart := make([]*executor.BehaviorModelExecutor, 0, len(arr))
+
+	for _, item := range arr {
+		switch {
+		case item.Get_req_time() < median:
+			lowPart = append(lowPart, item)
+		case item.Get_req_time() == median:
+			middlePart = append(middlePart, item)
+		case item.Get_req_time() > median:
+			highPart = append(highPart, item)
 		}
 	}
+
+	lowPart = quickSort(lowPart)
+	highPart = quickSort(highPart)
+
+	lowPart = append(lowPart, middlePart...)
+	lowPart = append(lowPart, highPart...)
+
+	return lowPart
 }
