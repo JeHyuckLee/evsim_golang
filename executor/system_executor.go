@@ -32,6 +32,7 @@ type SysExecutor struct {
 	learn_module       interface{}
 	port_map           map[interface{}]interface{}
 	sim_init_time      time.Time
+	AA                 []*BehaviorModelExecutor
 }
 
 func NewSysExecutor(_time_step int, _sim_name, _sim_mode string) *SysExecutor {
@@ -81,7 +82,17 @@ func (se *SysExecutor) Create_entity() {
 			//슬라이스를 순회하여 obj 를 active_obj_map 에 넣는다.
 		}
 		delete(se.waiting_obj_map, key)
-		// se.min_schedule_itme 정렬
+		for i := 1; i <= se.min_schedule_item.Len(); i++ {
+			se.AA = append(se.AA, se.min_schedule_item.PopFront().(*BehaviorModelExecutor))
+		}
+		for i := 1; i <= se.min_schedule_item.Len(); i++ {
+			for i := se.min_schedule_item.Len(); i > 0; i-- {
+				if se.AA[i].Get_req_time() > se.AA[i-1].Get_req_time() {
+					se.AA[i-1], se.AA[i] = se.AA[i], se.AA[i-1]
+				}
+			}
+		}
+
 	}
 }
 
@@ -181,19 +192,46 @@ func (se *SysExecutor) output_handling(obj, msg interface{}) {
 	}
 }
 
-func (se *SysExecutor) Flattening(_model, _del_model, _del_coupling interface{}) {
+func (se *SysExecutor) Flattening(_model interface{}, _del_model []*BehaviorModelExecutor, _del_coupling []*BehaviorModelExecutor) {
 
 }
 
 func (se *SysExecutor) Init_sim() {
 	se.simulation_mode = definition.SIMULATION_RUNNING
-	var _del_model []*BehaviorModelExecutor
-	// var _del_coupling []
-	for _, model_list := range se.waiting_obj_map {
-		for modle := range model_list {
 
+	var _del_model []*BehaviorModelExecutor
+	var _del_coupling []*BehaviorModelExecutor
+
+	for _, model_list := range se.waiting_obj_map {
+		for _, model := range model_list {
+			if model.Get_type() == definition.BEHAVIORAL {
+				se.Flattening(model, _del_model, _del_coupling)
+			}
 		}
 	}
+
+	for target, _model := range _del_model {
+		if _model := se.waiting_obj_map[target] {
+			se.waiting_obj_map[target].remove(_model)
+		}
+	}
+
+	for target, _model := range _del_coupling {
+		if _model := se.port_map[target] {
+			se.port_map[target].remove(_model)
+		}
+	}
+
+	if !(se.active_obj_map == nil) { se.global_time = Min(se.waiting_obj_map) }
+
+	if !(se.min_schedule_item) {
+		for obj := se.active_obj_map.Items(){
+			if obj[1].Time_advance() < 0 {
+				print("You should give posistive real number for the deadline")
+			}
+			obj[1].Set_req_time(se.global_time)
+			se.min_schedule_item = append(se.min_schedule_item, obj[1])
+		}
 }
 
 func (se *SysExecutor) Schedule() {
