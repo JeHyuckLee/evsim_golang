@@ -109,6 +109,10 @@ func main() {
 	sim.Coupling_relation(nil, "strart", gen.executor, "start")
 	sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
 	sim.Insert_external_event("start", nil, 0)
+
+	// sim.Create_entity()
+	// sim.Get_custom()
+
 	sim.Simulate(definition.Infinite)
 
 }

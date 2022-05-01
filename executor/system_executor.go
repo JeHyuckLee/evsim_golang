@@ -119,6 +119,11 @@ func NewSysExecutor(_time_step float64, _sim_name, _sim_mode string) *SysExecuto
 	return &se
 }
 
+func (se SysExecutor) Get_custom() interface{} {
+	fmt.Println(se.min_schedule_item.PopFront())
+	return 0
+}
+
 func (se SysExecutor) Get_global_time() float64 {
 	return se.global_time
 }
@@ -131,7 +136,7 @@ func (se *SysExecutor) Register_entity(sim_obj *BehaviorModelExecutor) {
 func (se *SysExecutor) Create_entity() {
 	if len(se.waiting_obj_map) != 0 {
 		key, value := func() (float64, []*BehaviorModelExecutor) {
-			var key float64 = 0
+			var key float64 = definition.Infinite
 			for k := range se.waiting_obj_map {
 				if k < key {
 					key = k
@@ -140,6 +145,7 @@ func (se *SysExecutor) Create_entity() {
 			value := se.waiting_obj_map[key]
 			return key, value
 		}() //key = create_time, value = obj의 슬라이스
+		// fmt.Println(value)
 		for _, v := range value {
 			se.active_obj_map[float64(v.sysobject.Get_obj_id())] = v
 			v.Set_req_time(se.global_time, 0) //elpased ti
@@ -148,7 +154,6 @@ func (se *SysExecutor) Create_entity() {
 		}
 		delete(se.waiting_obj_map, key)
 		Custom_Sorted(&se.min_schedule_item)
-
 	}
 }
 
@@ -293,6 +298,7 @@ func (se *SysExecutor) Schedule() {
 	}
 	se.min_schedule_item.PushFront(tuple_obj)
 	after := time.Since(before)
+
 	if se.sim_mode == "REAL_TIME" {
 
 		x := se.time_step - float64(after)
