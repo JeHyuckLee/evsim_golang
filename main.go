@@ -106,7 +106,7 @@ func main() {
 
 	sim.Register_entity(pro.executor)
 
-	sim.Coupling_relation(nil, "strart", gen.executor, "start")
+	sim.Coupling_relation(nil, "start", gen.executor, "start")
 	sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
 	sim.Insert_external_event("start", nil, 0)
 

@@ -208,7 +208,6 @@ func (se *SysExecutor) Coupling_relation(src_obj *BehaviorModelExecutor, out_por
 
 func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *system.SysMessage) {
 	pair := Object{obj, msg.Get_dst()}
-
 	b := func() bool {
 		for k := range se.port_map {
 			if k.object == obj {
@@ -223,6 +222,7 @@ func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *s
 	}
 
 	dst := se.port_map[pair]
+
 	if dst == nil { //도착지가없다
 		err := func() error {
 			return errors.New("Destination Not Found")
