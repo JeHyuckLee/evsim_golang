@@ -145,7 +145,6 @@ func (se *SysExecutor) Create_entity() {
 			value := se.waiting_obj_map[key]
 			return key, value
 		}() //key = create_time, value = obj의 슬라이스
-		// fmt.Println(value)
 		for _, v := range value {
 			se.active_obj_map[float64(v.sysobject.Get_obj_id())] = v
 			v.Set_req_time(se.global_time, 0) //elpased ti
@@ -296,6 +295,8 @@ func (se *SysExecutor) Schedule() {
 		Custom_Sorted(&se.min_schedule_item)
 		tuple_obj = se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
 	}
+	// fmt.Println(se.min_schedule_item.Front())
+	// fmt.Println(se.min_schedule_item.Back())
 	se.min_schedule_item.PushFront(tuple_obj)
 	after := time.Since(before)
 
