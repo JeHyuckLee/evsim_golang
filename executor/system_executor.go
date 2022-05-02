@@ -213,7 +213,7 @@ func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *s
 			e := o_event_queue{se.global_time, msg.Retrieve()}
 			se.output_event_queue.PushFront(e)
 		} else {
-			obj.Ext_trans(v.port, msg) // msg.retrieve()
+			v.object.Ext_trans(v.port, msg) // msg.retrieve()
 			v.object.Set_req_time(se.global_time, 0)
 		}
 	}
@@ -256,10 +256,12 @@ func (se *SysExecutor) Schedule() {
 	se.Handle_external_input_event()
 
 	tuple_obj := se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
+	fmt.Println(tuple_obj)
+
 	before := time.Now()
 	for {
 		t := math.Abs(tuple_obj.Get_req_time() - se.global_time) //req_time 과 global time 의 오차가 1e-9 보다 작으면 true
-		if t > 1e-9 {
+		if t == 1e-9 {
 			break
 		}
 		msg := tuple_obj.Output()
