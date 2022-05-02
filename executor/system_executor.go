@@ -258,11 +258,10 @@ func (se *SysExecutor) Schedule() {
 	tuple_obj := se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
 
 	before := time.Now()
-	for {
-		t := math.Abs(tuple_obj.Get_req_time() - se.global_time) //req_time 과 global time 의 오차가 1e-9 보다 작으면 true
-		if t == 1e-9 {
-			break
-		}
+
+	t := math.Abs(tuple_obj.Get_req_time() - se.global_time)
+	for ; t < 1e-9; t = math.Abs(tuple_obj.Get_req_time() - se.global_time) {
+
 		msg := tuple_obj.Output()
 
 		if msg != nil {
@@ -272,27 +271,28 @@ func (se *SysExecutor) Schedule() {
 		tuple_obj.Int_trans()
 
 		req_t := tuple_obj.Get_req_time()
-
 		tuple_obj.Set_req_time(req_t, 0)
 
 		se.min_schedule_item.PushBack(tuple_obj)
 
 		Custom_Sorted(&se.min_schedule_item)
 		tuple_obj = se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
+
 	}
+
 	se.min_schedule_item.PushFront(tuple_obj)
+
 	after := time.Since(before)
+
 	if se.sim_mode == "REAL_TIME" {
-
 		x := se.time_step - float64(after)
-
 		if x < 0 {
 			time.Sleep(0)
 		} else {
-			// time.Sleep(x)
+			time.Sleep(time.Duration(x))
 		}
-
 	}
+
 	se.global_time += se.time_step
 	se.Destory_entity()
 
