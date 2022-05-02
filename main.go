@@ -14,7 +14,6 @@ type Generator struct {
 }
 
 func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
-	fmt.Println("ext_trans")
 	if port == "start" {
 		fmt.Println("[gen][in]:", time.Now())
 		g.executor.Cur_state = "MOVE"
@@ -30,7 +29,6 @@ func (g *Generator) Int_trans() {
 }
 
 func (g *Generator) Output() *system.SysMessage {
-	fmt.Println("output")
 	msg := system.NewSysMessage(g.executor.Behaviormodel.CoreModel.Get_name(), "process")
 	fmt.Println("[gen][out]:", time.Now())
 	msg.Insert(g.msg_list[0])

@@ -268,10 +268,15 @@ func (se *SysExecutor) Schedule() {
 		if msg != nil {
 			se.output_handling(tuple_obj, msg)
 		}
-		// tuple_obj.Int_trans()
+
+		tuple_obj.Int_trans()
+
 		req_t := tuple_obj.Get_req_time()
+
 		tuple_obj.Set_req_time(req_t, 0)
-		se.min_schedule_item.PushFront(tuple_obj)
+
+		se.min_schedule_item.PushBack(tuple_obj)
+
 		Custom_Sorted(&se.min_schedule_item)
 		tuple_obj = se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
 	}
