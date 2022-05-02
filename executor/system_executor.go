@@ -256,7 +256,6 @@ func (se *SysExecutor) Schedule() {
 	se.Handle_external_input_event()
 
 	tuple_obj := se.min_schedule_item.PopFront().(*BehaviorModelExecutor)
-	fmt.Println(tuple_obj)
 
 	before := time.Now()
 	for {
