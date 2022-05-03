@@ -16,8 +16,9 @@ type Generator struct {
 func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
 	fmt.Println("ext_trans")
 	if port == "start" {
-		fmt.Println("[gen][out]:", time.Now())
+		fmt.Println("[gen][in]:", time.Now())
 		g.executor.Cur_state = "MOVE"
+
 	}
 }
 
@@ -114,8 +115,8 @@ func main() {
 	sim.Coupling_relation(nil, "start", gen.executor, "start")
 	sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
 	sim.Insert_external_event("start", nil, 0)
-
 	sim.Simulate(definition.Infinite)
+
 }
 
 func remove(slice []interface{}, s int) []interface{} {
