@@ -14,13 +14,15 @@ type Generator struct {
 }
 
 func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
+	fmt.Println("ext_trans")
 	if port == "start" {
-		fmt.Println("[gen][in]:", time.Now())
+		fmt.Println("[gen][out]:", time.Now())
 		g.executor.Cur_state = "MOVE"
 	}
 }
 
 func (g *Generator) Int_trans() {
+	fmt.Println("int_trans")
 	if g.executor.Cur_state == "SEND" && g.msg_list == nil {
 		g.executor.Cur_state = "IDLE"
 	} else {
@@ -29,6 +31,7 @@ func (g *Generator) Int_trans() {
 }
 
 func (g *Generator) Output() *system.SysMessage {
+	fmt.Println("output")
 	msg := system.NewSysMessage(g.executor.Behaviormodel.CoreModel.Get_name(), "process")
 	fmt.Println("[gen][out]:", time.Now())
 	msg.Insert(g.msg_list[0])
@@ -40,7 +43,7 @@ func (g *Generator) Output() *system.SysMessage {
 func NewGenerator() *Generator {
 	gen := Generator{}
 	gen.executor = executor.NewExecutor(0, definition.Infinite, "Gen", "sname")
-	gen.executor.Model = &gen
+	gen.executor.AbstractModel = &gen
 	gen.executor.Init_state("IDLE")
 	gen.executor.Behaviormodel.Insert_state("IDLE", definition.Infinite)
 	gen.executor.Behaviormodel.Insert_state("SEND", 1)
@@ -57,17 +60,18 @@ type Processor struct {
 }
 
 func (p *Processor) Ext_trans(port string, msg *system.SysMessage) {
+	fmt.Println("ext_trans")
 	if port == "process" {
 		fmt.Println("[proc][in]", time.Now())
 		p.executor.Cancel_rescheduling()
 		data := msg.Retrieve()
 		p.msg_list = append(p.msg_list, data...)
 		p.executor.Cur_state = "PROCESS"
-
 	}
 }
 
 func (p *Processor) Int_trans() {
+	fmt.Println("int_trans")
 	if p.executor.Cur_state == "PROCESS" {
 		p.executor.Cur_state = "IDLE"
 	} else {
@@ -76,21 +80,22 @@ func (p *Processor) Int_trans() {
 }
 
 func (p Processor) Output() *system.SysMessage {
+	fmt.Println("output")
 	fmt.Println("[proc][out]", time.Now())
 	fmt.Println(p.msg_list...)
 	return nil
 }
 
 func NewProcessor() *Processor {
-	pro := Processor{}
+	pro := &Processor{}
 	pro.executor = executor.NewExecutor(0, definition.Infinite, "Proc", "sname")
-	pro.executor.Model = &pro
+	pro.executor.AbstractModel = pro
 	pro.executor.Init_state("IDLE")
 	pro.executor.Behaviormodel.Insert_state("IDLE", definition.Infinite)
 	pro.executor.Behaviormodel.Insert_state("PROCESS", 2)
 	pro.executor.Behaviormodel.CoreModel.Insert_input_port("PROCESS")
 
-	return &pro
+	return pro
 }
 
 func main() {
@@ -109,8 +114,8 @@ func main() {
 	sim.Coupling_relation(nil, "start", gen.executor, "start")
 	sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
 	sim.Insert_external_event("start", nil, 0)
-	sim.Simulate(definition.Infinite)
 
+	sim.Simulate(definition.Infinite)
 }
 
 func remove(slice []interface{}, s int) []interface{} {
