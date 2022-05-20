@@ -336,7 +336,7 @@ func (se *SysExecutor) Schedule() {
 }
 
 func (se *SysExecutor) Simulate(_time float64) { //default = infinity
-	fmt.Println("sumulate")
+	fmt.Println("simulate")
 	se.target_time = se.global_time + _time
 	se.Init_sim()
 	start_time = time.Now()
