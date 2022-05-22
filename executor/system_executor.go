@@ -229,7 +229,6 @@ func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *s
 		}()
 		fmt.Println(err)
 	}
-
 	for _, v := range dst {
 		if v.object == nil {
 			e := o_event_queue{se.global_time, msg.Retrieve()}

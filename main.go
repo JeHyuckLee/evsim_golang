@@ -20,7 +20,6 @@ func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
 		fmt.Println("[gen][in]:", time.Now())
 		g.executor.Cur_state = "MOVE"
 	}
-
 }
 
 func (g *Generator) Int_trans() {
@@ -103,6 +102,7 @@ func NewProcessor() *Processor {
 }
 
 func main() {
+	fmt.Println(time.Now())
 	executor.Start_time = time.Now()
 	runtime.GOMAXPROCS(8)
 	se := executor.NewSysSimulator()
