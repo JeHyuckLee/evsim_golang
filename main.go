@@ -24,7 +24,7 @@ func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
 
 func (g *Generator) Int_trans() {
 	//fmt.Println("int_trans")
-	if g.executor.Cur_state == "MOVE" && g.msg_list == nil {
+	if g.executor.Cur_state == "MOVE" && len(g.msg_list) == 0 {
 		g.executor.Cur_state = "IDLE"
 	} else {
 		g.executor.Cur_state = "MOVE"
@@ -95,7 +95,7 @@ func NewProcessor() *Processor {
 	pro.executor.AbstractModel = pro
 	pro.executor.Init_state("IDLE")
 	pro.executor.Behaviormodel.Insert_state("IDLE", definition.Infinite)
-	pro.executor.Behaviormodel.Insert_state("PROCESS", 2)
+	pro.executor.Behaviormodel.Insert_state("PROCESS", 1)
 	pro.executor.Behaviormodel.CoreModel.Insert_input_port("PROCESS")
 
 	return pro
@@ -109,14 +109,13 @@ func main() {
 	se.Register_engine("sname", "REAL_TIME", 1)
 	sim := se.Get_engine("sname")
 	sim.Behaviormodel.CoreModel.Insert_input_port("start")
-	for i := 0; i < 2; i++ {
-		gen := NewGenerator()
-		pro := NewProcessor()
-		sim.Register_entity(gen.executor)
-		sim.Register_entity(pro.executor)
-		sim.Coupling_relation(nil, "start", gen.executor, "start")
-		sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
-	}
+
+	gen := NewGenerator()
+	pro := NewProcessor()
+	sim.Register_entity(gen.executor)
+	sim.Register_entity(pro.executor)
+	sim.Coupling_relation(nil, "start", gen.executor, "start")
+	sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
 
 	sim.Insert_external_event("start", nil, 0)
 	sim.Simulate(definition.Infinite)

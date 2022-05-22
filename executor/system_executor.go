@@ -122,7 +122,6 @@ func (se SysExecutor) Get_global_time() float64 {
 func (se *SysExecutor) Register_entity(sim_obj *BehaviorModelExecutor) {
 	se.waiting_obj_map[sim_obj.Get_create_time()] = append(se.waiting_obj_map[sim_obj.Get_create_time()], sim_obj)
 	// waiting_obj_map 에 create_time 별로 슬라이스를 만들어서 sim_obj 를 append 한다.
-	fmt.Println("\n Register_entity :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Create_entity() {
@@ -150,7 +149,6 @@ func (se *SysExecutor) Create_entity() {
 
 		}
 	}
-	fmt.Println("\n Create_entity :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Destory_entity() {
@@ -182,7 +180,6 @@ func (se *SysExecutor) Destory_entity() {
 			//mim_schedule_item에서도 지운다.
 		}
 	}
-	fmt.Println("\n Destory_entity :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Coupling_relation(src_obj *BehaviorModelExecutor, out_port string, dst_obj *BehaviorModelExecutor, in_port string) {
@@ -201,7 +198,6 @@ func (se *SysExecutor) Coupling_relation(src_obj *BehaviorModelExecutor, out_por
 		src := Object{src_obj, out_port}
 		se.port_map[src] = append(se.port_map[src], dst)
 	}
-	fmt.Println("\n Coupling_relation :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *system.SysMessage) {
@@ -239,8 +235,6 @@ func (se *SysExecutor) Single_output_handling(obj *BehaviorModelExecutor, msg *s
 		}
 	}
 
-	fmt.Println("\n Single_output_handling :", time.Since(Start_time))
-
 }
 
 func (se *SysExecutor) output_handling(obj *BehaviorModelExecutor, msg *system.SysMessage) {
@@ -248,7 +242,6 @@ func (se *SysExecutor) output_handling(obj *BehaviorModelExecutor, msg *system.S
 	if !(msg == nil) {
 		se.Single_output_handling(obj, msg)
 	}
-	fmt.Println("\n output_handling :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Init_sim() {
@@ -270,7 +263,6 @@ func (se *SysExecutor) Init_sim() {
 			se.min_schedule_item = append(se.min_schedule_item, obj)
 		}
 	}
-	fmt.Println("\n Init_sim :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Schedule() {
@@ -281,8 +273,6 @@ func (se *SysExecutor) Schedule() {
 	se.min_schedule_item = remove(se.min_schedule_item, 0)
 
 	// before := time.Now()
-
-	fmt.Println("global time :", se.global_time, "obj:", tuple_obj, "req_time :", tuple_obj.Get_req_time())
 
 	const epsilon = 1e-14
 	// start_time := time.Now()
@@ -307,13 +297,9 @@ func (se *SysExecutor) Schedule() {
 
 		tuple_obj = se.min_schedule_item[0]
 		se.min_schedule_item = remove(se.min_schedule_item, 0)
-
-		fmt.Println("obj : ", tuple_obj)
-		fmt.Println("req_time :", tuple_obj.Get_req_time())
 	}
 
 	se.min_schedule_item = append([]*BehaviorModelExecutor{tuple_obj}, se.min_schedule_item...)
-	fmt.Println()
 	// after := time.Since(before)
 
 	// if se.sim_mode == "REAL_TIME" {
@@ -328,8 +314,6 @@ func (se *SysExecutor) Schedule() {
 	// }
 	se.global_time += se.time_step
 	se.Destory_entity()
-	fmt.Println("\n Schedule :", time.Since(Start_time))
-
 }
 
 func (se *SysExecutor) Simulate(_time float64) { //default = infinity
@@ -376,7 +360,6 @@ func (se *SysExecutor) Insert_external_event(_port string, _msg interface{}, sch
 	} else {
 		print("[ERROR][INSERT_EXTERNAL_EVNT] Port Not Found")
 	}
-	fmt.Println("\n Insert_external_event :", time.Since(Start_time))
 
 }
 
@@ -392,7 +375,6 @@ func (se *SysExecutor) Insert_custom_external_event(_port string, _bodylist []in
 	} else {
 		fmt.Printf("[ERROR][INSERT_EXTERNAL_EVNT] Port Not Found")
 	}
-	fmt.Println("\n Insert_custom_external_event :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Get_generated_event() []*o_event_queue {
@@ -415,7 +397,6 @@ func (se *SysExecutor) Handle_external_input_event() {
 	}
 
 	sort.Sort(schedule_item(se.min_schedule_item))
-	fmt.Println("\n Handle_external_input_event :", time.Since(Start_time))
 }
 
 func (se *SysExecutor) Handle_external_output_event() deque.Deque {
