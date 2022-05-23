@@ -222,6 +222,7 @@ func (se *SysExecutor) Schedule() {
 
 	if t < epsilon {
 		tuple_obj := heap.Pop(&se.min_schedule_item).(*BehaviorModelExecutor)
+		fmt.Println(tuple_obj)
 		for {
 			msg := tuple_obj.Output()
 
@@ -233,7 +234,7 @@ func (se *SysExecutor) Schedule() {
 			tuple_obj.Set_req_time(req_t, 0)
 
 			heap.Push(&se.min_schedule_item, tuple_obj)
-			sort.Sort(min_schedule_heap(se.min_schedule_item))
+			//sort.Sort(min_schedule_heap(se.min_schedule_item))
 			t := math.Abs(se.min_schedule_item[0].Get_req_time() - se.global_time)
 			if t > epsilon {
 				break
@@ -241,41 +242,6 @@ func (se *SysExecutor) Schedule() {
 			tuple_obj = heap.Pop(&se.min_schedule_item).(*BehaviorModelExecutor)
 		}
 	}
-
-	// tuple_obj := heap.Pop(&se.min_schedule_item).(*BehaviorModelExecutor)
-
-	// fmt.Println("global time :", se.global_time, "obj:", tuple_obj, "req_time :", tuple_obj.Get_req_time())
-
-	// for {
-	// 	t := math.Abs(tuple_obj.Get_req_time() - se.global_time)
-	// 	if t > epsilon {
-	// 		fmt.Println(tuple_obj)
-	// 		fmt.Println("for문 탈출")
-	// 		break
-	// 	}
-
-	// 	msg := tuple_obj.Output()
-
-	// 	if msg != nil {
-	// 		se.output_handling(tuple_obj, msg)
-	// 	}
-	// 	tuple_obj.Int_trans()
-	// 	req_t := tuple_obj.Get_req_time()
-	// 	tuple_obj.Set_req_time(req_t, 0)
-
-	// 	heap.Push(&se.min_schedule_item, tuple_obj)
-
-	// 	tuple_obj = heap.Pop(&se.min_schedule_item).(*BehaviorModelExecutor)
-	// 	fmt.Println("이게 맨앞으로 들어가야함 : ", tuple_obj)
-	// 	fmt.Println("obj : ", tuple_obj)
-	// 	fmt.Println("req_time :", tuple_obj.Get_req_time())
-	// }
-
-	// se.min_schedule_item.Push(tuple_obj)
-	// sort.Sort(min_schedule_heap(se.min_schedule_item))
-	// for i := 0; i < se.min_schedule_item.Len(); i++ {
-	// 	fmt.Println(" 과연 그럴까요? : ", se.min_schedule_item[i])
-	// }
 
 	se.global_time += se.time_step
 	se.Destory_entity()
@@ -359,7 +325,6 @@ func (se *SysExecutor) Handle_external_input_event() {
 		heap.Pop(&se.input_event_queue)
 
 	}
-
 	sort.Sort(min_schedule_heap(se.min_schedule_item))
 }
 
