@@ -22,7 +22,6 @@ func (g *Generator) Ext_trans(port string, msg *system.SysMessage) {
 
 		g.executor.Cur_state = "MOVE"
 	}
-	fmt.Println("\n gen_ext_trans :", time.Since(executor.Start_time))
 }
 
 func (g *Generator) Int_trans() {
@@ -32,7 +31,6 @@ func (g *Generator) Int_trans() {
 	} else {
 		g.executor.Cur_state = "MOVE"
 	}
-	fmt.Println("\n get_int_trans :", time.Since(executor.Start_time))
 }
 
 func (g *Generator) Output() *system.SysMessage {
@@ -41,7 +39,6 @@ func (g *Generator) Output() *system.SysMessage {
 	fmt.Println("[gen][out]:", time.Now())
 	msg.Insert(g.msg_list[0])
 	g.msg_list = remove(g.msg_list, 0)
-	fmt.Println("\n gen_outPut :", time.Since(executor.Start_time))
 	return msg
 }
 
@@ -74,7 +71,6 @@ func (p *Processor) Ext_trans(port string, msg *system.SysMessage) {
 		p.msg_list = append(p.msg_list, data...)
 		p.executor.Cur_state = "PROCESS"
 	}
-	fmt.Println("\n pro_exttrans :", time.Since(executor.Start_time))
 }
 
 func (p *Processor) Int_trans() {
@@ -84,7 +80,6 @@ func (p *Processor) Int_trans() {
 	} else {
 		p.executor.Cur_state = "IDLE"
 	}
-	fmt.Println("\n pro_int_trans :", time.Since(executor.Start_time))
 }
 
 func (p Processor) Output() *system.SysMessage {
