@@ -8,6 +8,7 @@ import (
 	"evsim_golang/system"
 	"fmt"
 	"math"
+	"runtime"
 	"time"
 
 	"github.com/gammazero/deque"
@@ -196,7 +197,7 @@ func (se *SysExecutor) output_handling(obj *BehaviorModelExecutor, msg *system.S
 
 func (se *SysExecutor) Init_sim() {
 	se.simulation_mode = definition.SIMULATION_RUNNING
-
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	if se.active_obj_map == nil {
 		se.global_time = 0
 	}

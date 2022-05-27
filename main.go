@@ -5,7 +5,7 @@ import (
 	"evsim_golang/executor"
 	"evsim_golang/system"
 	"fmt"
-	"runtime"
+
 	"time"
 )
 
@@ -99,23 +99,17 @@ func NewProcessor() *Processor {
 func main() {
 	fmt.Println("start", time.Now())
 	executor.Start_time = time.Now()
-	runtime.GOMAXPROCS(8)
+
 	se := executor.NewSysSimulator()
 	se.Register_engine("sname", "REAL_TIME", 1)
 	sim := se.Get_engine("sname")
 	sim.Behaviormodel.CoreModel.Insert_input_port("start")
-	for i := 0; i < 100; i++ {
-		gen := NewGenerator()
-		pro := NewProcessor()
-		sim.Register_entity(gen.executor)
-		sim.Register_entity(pro.executor)
-		sim.Coupling_relation(nil, "start", gen.executor, "start")
-		sim.Coupling_relation(gen.executor, "process", pro.executor, "process")
-	}
+	gen := NewGenerator()
+	sim.Register_entity(gen.executor)
+	sim.Coupling_relation(nil, "start", gen.executor, "start")
 
 	sim.Insert_external_event("start", nil, 0)
 	sim.Simulate(definition.Infinite)
-
 }
 
 func remove(slice []interface{}, s int) []interface{} {
