@@ -67,7 +67,7 @@ func main() {
 
 	sim.Insert_external_event("start", nil, 0) // 발생시킬 이벤트 정의
 
-	sim.Simulate(definition.Infinite) // 엔진 실행
+	sim.Simulate(definition.Infinite) // 엔진
 }
 
 func remove(slice []interface{}, s int) []interface{} {
